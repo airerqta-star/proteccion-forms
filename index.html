@@ -1111,11 +1111,8 @@
 const toggle = document.getElementById('themeToggle');
 const root = document.documentElement;
 
-// Detectar preferencia del sistema
-if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  root.setAttribute('data-theme', 'dark');
-  toggle.checked = true;
-}
+// Inicia siempre en modo claro
+root.setAttribute('data-theme', 'light');
 
 toggle.addEventListener('change', () => {
   root.setAttribute('data-theme', toggle.checked ? 'dark' : 'light');
@@ -1273,4 +1270,5 @@ async function exportarPDF() {
 </script>
 </body>
 </html>
+
 
