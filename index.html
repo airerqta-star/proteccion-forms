@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acta de Intervención – Protección de Menores | AGC Reconquista</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --bg: #f5f2ec;
+    --paper: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #444;
+    --border: #2c4a7c;
+    --border-light: #a0b0c8;
+    --accent: #2c4a7c;
+    --accent2: #8b1a1a;
+    --header-bg: #2c4a7c;
+    --header-text: #ffffff;
+    --field-bg: #f0f4fa;
+    --field-border: #2c4a7c;
+    --section-bg: #e8edf5;
+    --section-border: #2c4a7c;
+    --check-accent: #2c4a7c;
+    --shadow: 0 4px 24px rgba(0,0,0,0.12);
+    --note-bg: #fff8e1;
+    --note-border: #8b6914;
+    --divider: #2c4a7c;
+    --ui-bg: #e8edf5;
+    --ui-btn: #2c4a7c;
+    --ui-btn-text: #ffffff;
+    --ui-btn-hover: #1a3060;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f1117;
+    --paper: #1a1d27;
+    --text: #e8e6e0;
+    --text-muted: #b0aaa0;
+    --border: #4a7cc7;
+    --border-light: #3a5a8a;
+    --accent: #4a7cc7;
+    --accent2: #c84040;
+    --header-bg: #1a2840;
+    --header-text: #e8e6e0;
+    --field-bg: #12151f;
+    --field-border: #4a7cc7;
+    --section-bg: #1e2538;
+    --section-border: #4a7cc7;
+    --check-accent: #6a9ce8;
+    --shadow: 0 4px 32px rgba(0,0,0,0.5);
+    --note-bg: #1f1a08;
+    --note-border: #c8a020;
+    --divider: #4a7cc7;
+    --ui-bg: #1a1d27;
+    --ui-btn: #4a7cc7;
+    --ui-btn-text: #ffffff;
+    --ui-btn-hover: #6a9ce8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+    min-height: 100vh;
+  }
+
+  /* ── UI CONTROLS (no imprimen) ── */
+  .ui-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: var(--ui-bg);
+    border-bottom: 2px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .ui-bar-title {
+    font-family: 'Merriweather', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: auto;
+    letter-spacing: 0.3px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ui-btn);
+    color: var(--ui-btn-text);
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .btn:hover { background: var(--ui-btn-hover); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+  }
+  .btn-secondary:hover { background: var(--accent); color: #fff; }
+  .btn-danger {
+    background: var(--accent2);
+  }
+  .btn-danger:hover { background: #a02020; }
+  .btn-blank {
+    background: #2a7a2a;
+  }
+  .btn-blank:hover { background: #1e5e1e; }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .toggle-switch {
+    position: relative;
+    width: 44px; height: 24px;
+    cursor: pointer;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border-light);
+    border-radius: 24px;
+    transition: 0.3s;
+  }
+  .toggle-slider:before {
+    content: '';
+    position: absolute;
+    height: 18px; width: 18px;
+    left: 3px; bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+  input:checked + .toggle-slider { background: var(--accent); }
+  input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+  /* ── DOCUMENT WRAPPER ── */
+  .page-wrapper {
+    padding: 70px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── A4 SHEET ── */
+  .acta {
+    background: var(--paper);
+    width: 210mm;
+    max-width: 100%;
+    box-shadow: var(--shadow);
+    padding: 12mm 14mm 12mm;
+    border: 1px solid var(--border-light);
+    transition: background 0.3s;
+    position: relative;
+  }
+
+  /* page-break between sheets */
+  .acta + .acta {
+    margin-top: 12px;
+    border-top: 3px dashed var(--divider);
+  }
+
+  /* ── HEADER ── */
+  .acta-header {
+    background: transparent;
+    color: var(--text);
+    margin: 0 0 8mm;
+    padding: 4mm 0 4mm;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .logo-left, .logo-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .logo-left img, .logo-right img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(1.1);
+  }
+  .logo-center img {
+    height: 54px;
+    object-fit: contain;
+    filter: brightness(1.05);
+  }
+  .logo-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    max-width: 80px;
+    line-height: 1.2;
+  }
+
+  .header-center {
+    text-align: center;
+    padding: 0 8px;
+  }
+  .header-center h1 {
+    font-family: 'Merriweather', serif;
+    font-size: 17px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  .header-center .subtitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .header-center .subtitle2 {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── LEGAL BANNER ── */
+  .legal-banner {
+    background: var(--section-bg);
+    border-left: 5px solid var(--accent2);
+    padding: 7px 12px;
+    margin-bottom: 8mm;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .legal-banner strong { color: var(--accent2); }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-bottom: 6mm;
+  }
+
+  .section-title {
+    font-family: 'Merriweather', serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--header-bg);
+    background: var(--section-bg);
+    border-left: 5px solid var(--accent);
+    border-bottom: 1px solid var(--border-light);
+    padding: 5px 10px;
+    margin-bottom: 5mm;
+  }
+
+  [data-theme="dark"] .section-title { color: var(--accent); }
+
+  /* ── GRID / FIELDS ── */
+  .field-grid {
+    display: grid;
+    gap: 4mm 6mm;
+  }
+  .field-grid.col-2 { grid-template-columns: 1fr 1fr; }
+  .field-grid.col-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field-grid.col-1-2 { grid-template-columns: 1fr 2fr; }
+  .field-grid.col-2-1 { grid-template-columns: 2fr 1fr; }
+  .field-grid.col-1-1-1-1 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .field.span-full { grid-column: 1 / -1; }
+
+  .field label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+
+  .field input[type="text"],
+  .field input[type="date"],
+  .field input[type="time"],
+  .field input[type="number"],
+  .field select,
+  .field textarea {
+    background: var(--field-bg);
+    border: none;
+    border-bottom: 2px solid var(--field-border);
+    border-radius: 2px;
+    padding: 5px 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    color: var(--text);
+    width: 100%;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-bottom-color: var(--accent2);
+    background: var(--paper);
+    box-shadow: 0 2px 0 var(--accent2);
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 50px;
+    border: 2px solid var(--field-border);
+    border-radius: 3px;
+    line-height: 1.5;
+  }
+  .field select {
+    cursor: pointer;
+    appearance: auto;
+  }
+
+  /* ── INLINE FIELD (label + input horizontal) ── */
+  .field-inline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .field-inline label {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--text);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .field-inline input {
+    flex: 1;
+    min-width: 80px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--field-border);
+    padding: 3px 4px;
+    font-size: 13.5px;
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--text);
+    outline: none;
+  }
+  .field-inline input:focus { border-bottom-color: var(--accent2); }
+
+  /* ── ACTA NUMBER ROW ── */
+  .acta-number-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--section-bg);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 14px;
+    margin-bottom: 6mm;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .acta-number-row .field-inline label {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+  }
+  .acta-number-row .field-inline input {
+    font-size: 15px;
+    font-weight: 700;
+    max-width: 120px;
+  }
+
+  /* ── CHECKBOXES ── */
+  .check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3mm;
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .check-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    cursor: pointer;
+    accent-color: var(--check-accent);
+    margin-top: 1px;
+  }
+  .check-item span {
+    font-size: 13.5px;
+    color: var(--text);
+    flex: 1;
+  }
+  .check-sub {
+    margin-left: 26px;
+    margin-top: 2mm;
+    display: flex;
+    flex-direction: column;
+    gap: 2mm;
+    padding-left: 10px;
+    border-left: 3px solid var(--border-light);
+  }
+
+  /* ── RADIO ── */
+  .radio-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .radio-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 13.5px;
+  }
+  .radio-item input[type="radio"] {
+    width: 17px; height: 17px;
+    cursor: pointer;
+    accent-color: var(--check-accent);
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border-light);
+    margin: 5mm 0;
+  }
+  .divider-strong {
+    border-top: 2px solid var(--divider);
+    margin: 6mm 0;
+  }
+
+  /* ── SIGNATURE BOX ── */
+  .signature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm;
+    margin-top: 6mm;
+  }
+  .signature-box {
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
+    padding: 6px 10px;
+    text-align: center;
+  }
+  .signature-box .sig-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--accent);
+    margin-bottom: 4mm;
+  }
+  .signature-box .sig-line {
+    border-top: 1.5px solid var(--text);
+    margin: 18mm 10px 4px;
+  }
+  .signature-box .sig-sublabel {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .signature-box input {
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    background: transparent;
+    font-size: 12px;
+    color: var(--text);
+    width: 100%;
+    text-align: center;
+    outline: none;
+    padding: 2px 4px;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  /* ── NOTE BOX ── */
+  .note-box {
+    background: var(--note-bg);
+    border: 1.5px solid var(--note-border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 5mm;
+  }
+  .note-box h4 {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--note-border);
+    letter-spacing: 0.8px;
+    margin-bottom: 5px;
+  }
+  .note-box ul {
+    list-style: disc;
+    padding-left: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── INSTRUCCIONES (page 2) ── */
+  .instrucciones-box {
+    background: var(--section-bg);
+    border: 2px solid var(--accent);
+    border-radius: 5px;
+    padding: 10mm;
+  }
+  .instrucciones-box h2 {
+    font-family: 'Merriweather', serif;
+    font-size: 15px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 6mm;
+    text-align: center;
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 4mm;
+  }
+  .instruccion-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 4mm;
+    align-items: flex-start;
+  }
+  .instruccion-num {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    width: 26px; height: 26px;
+    min-width: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Merriweather', serif;
+  }
+  .instruccion-text {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .instruccion-text strong { color: var(--accent2); }
+
+  .page-tag {
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6mm;
+    font-style: italic;
+  }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    .ui-bar { display: none !important; }
+    .page-wrapper { padding: 0; background: white; }
+    body { background: white; }
+
+    .acta {
+      width: 210mm;
+      max-width: 210mm;
+      box-shadow: none;
+      border: none;
+      padding: 12mm 14mm;
+      page-break-after: always;
+      break-after: page;
+    }
+    .acta:last-child { page-break-after: avoid; break-after: avoid; }
+    .acta + .acta { margin-top: 0; border-top: none; }
+
+    /* Forzar colores en impresión */
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    .acta-header { background: transparent !important; color: #1a1a1a !important; border-bottom: 3px solid #2c4a7c !important; }
+    .section-title { background: #e8edf5 !important; color: #2c4a7c !important; }
+    .section-bg, .field-bg { background: #f0f4fa !important; }
+    .note-box { background: #fff8e1 !important; }
+
+    .field input, .field textarea, .field select,
+    .field-inline input, .signature-box input {
+      border-color: #2c4a7c !important;
+      background: #f0f4fa !important;
+      color: #1a1a1a !important;
+    }
+    body, .text, span, label, p { color: #1a1a1a !important; }
+    .section-title { color: #2c4a7c !important; }
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ UI BAR ═══════════════════════════════════ -->
+<div class="ui-bar" id="uiBar">
+  <span class="ui-bar-title">📋 Acta de Intervención – Protección de Menores · AGC Reconquista</span>
+
+  <label class="theme-toggle">
+    <span>☀️</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="themeToggle">
+      <span class="toggle-slider"></span>
+    </label>
+    <span>🌙</span>
+  </label>
+
+  <button class="btn btn-secondary" onclick="limpiarFormulario()">🗑️ Limpiar</button>
+  <button class="btn" onclick="exportarPDF()">⬇️ Exportar PDF</button>
+  <button class="btn btn-danger" onclick="window.print()">🖨️ Imprimir</button>
+  <button class="btn btn-blank" onclick="imprimirEnBlanco()">📄 Formulario en blanco</button>
+</div>
+
+<!-- ═══════════════════════════════════ PÁGINA 1 ═══════════════════════════════════ -->
+<div class="page-wrapper">
+<div class="acta" id="pag1">
+
+  <!-- ENCABEZADO -->
+  <div class="acta-header">
+    <div class="logo-left">
+      <img src="https://res.cloudinary.com/dthg9wo6r/image/upload/v1767976370/escudomunicipal_rgt6cf.png" alt="Escudo Municipal" onerror="this.style.display='none'">
+      <span class="logo-label">Municipalidad de Reconquista</span>
+    </div>
+    <div class="header-center">
+      <h1>Acta de Intervención</h1>
+      <div class="subtitle">Programa de Protección de Menores en Espacio Público</div>
+      <div class="subtitle2">Secretaría de Control Público · Municipalidad de Reconquista · Santa Fe</div>
+    </div>
+    <div class="logo-right" style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+      <img src="https://res.cloudinary.com/dthg9wo6r/image/upload/v1763864223/Boton-Control-Publico-768x772_xvw7h5.png" alt="Secretaría Control Público" style="height:54px;" onerror="this.style.display='none'">
+      <span class="logo-label">Secretaría de Control Público</span>
+    </div>
+  </div>
+
+  <!-- BANNER LEGAL -->
+  <div class="legal-banner">
+    <strong>Fundamento legal:</strong> Ley Nacional 26.061 – Protección Integral de Niñas, Niños y Adolescentes · Interés Superior del Niño (Art. 3°, Ley 26.061)
+  </div>
+
+  <!-- IDENTIFICACIÓN DEL ACTA -->
+  <div class="acta-number-row">
+    <div class="field-inline">
+      <label>N° de Acta:</label>
+      <input type="text" id="nroActa" placeholder="______" style="max-width:100px;">
+      <label style="margin-left:4px;"> / 2026</label>
+    </div>
+    <div class="field-inline">
+      <label>Fecha:</label>
+      <input type="date" id="fecha" style="max-width:160px;">
+    </div>
+    <div class="field-inline">
+      <label>Hora:</label>
+      <input type="time" id="hora" style="max-width:100px;">
+    </div>
+  </div>
+
+  <!-- SECCIÓN 1: DATOS DE LA INTERVENCIÓN -->
+  <div class="section">
+    <div class="section-title">1. Datos de la Intervención</div>
+    <div class="field-grid col-1">
+      <div class="field span-full">
+        <label>Lugar exacto de intervención (calle, intersección, barrio)</label>
+        <input type="text" id="lugar" placeholder="Ej: Bv. Wilde esq. San Martín, Barrio Norte">
+      </div>
+    </div>
+    <div class="field-grid col-3" style="margin-top:4mm;">
+      <div class="field">
+        <label>Agente interviniente</label>
+        <input type="text" id="agente" placeholder="Nombre y apellido">
+      </div>
+      <div class="field">
+        <label>Legajo / N°</label>
+        <input type="text" id="legajo" placeholder="Nro. de legajo">
+      </div>
+      <div class="field">
+        <label>Cargo</label>
+        <select id="cargo">
+          <option value="">Seleccionar...</option>
+          <option>Inspector – Inspección General</option>
+          <option>Agente Ojos en Alerta</option>
+          <option>Supervisor</option>
+          <option>Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-grid col-2" style="margin-top:4mm;">
+      <div class="field">
+        <label>Unidad / Área de origen del alerta</label>
+        <select id="unidad">
+          <option value="">Seleccionar...</option>
+          <option>CEO – Ojos en Alerta (monitoreo)</option>
+          <option>CEO – Agente en campo</option>
+          <option>Inspección General</option>
+          <option>Denuncia ciudadana</option>
+          <option>Patrulla nocturna</option>
+          <option>Otra</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tipo de alerta recibido</label>
+        <select id="tipoAlerta">
+          <option value="">Seleccionar...</option>
+          <option>Llamada radio/móvil desde CEO</option>
+          <option>Aviso sistema de monitoreo</option>
+          <option>Detección directa en recorrida</option>
+          <option>Llamado ciudadano derivado</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: DATOS DEL MENOR -->
+  <div class="section">
+    <div class="section-title">2. Datos del Menor <span style="font-weight:400;font-size:10px;">(completar solo si el menor lo proporciona voluntariamente)</span></div>
+    <div class="field-grid col-2-1">
+      <div class="field">
+        <label>Nombre completo declarado</label>
+        <input type="text" id="nombreMenor" placeholder="Si lo proporciona voluntariamente">
+      </div>
+      <div class="field">
+        <label>DNI (si disponible)</label>
+        <input type="text" id="dniMenor" placeholder="Nro. de documento">
+      </div>
+    </div>
+    <div class="field-grid col-1-1-1-1" style="margin-top:4mm;">
+      <div class="field">
+        <label>Edad aproximada</label>
+        <input type="number" id="edadMenor" placeholder="Años" min="0" max="17">
+      </div>
+      <div class="field">
+        <label>Sexo</label>
+        <select id="sexo">
+          <option value="">Selec...</option>
+          <option>Masculino</option>
+          <option>Femenino</option>
+          <option>No determinado</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Domicilio declarado</label>
+        <input type="text" id="domicilioMenor" placeholder="Calle y número">
+      </div>
+      <div class="field">
+        <label>Barrio / Localidad</label>
+        <input type="text" id="barrioMenor" placeholder="Barrio">
+      </div>
+    </div>
+    <div style="margin-top:4mm;">
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--accent);display:block;margin-bottom:3mm;">Estado y situación observada del menor</label>
+      <div class="check-group">
+        <label class="check-item">
+          <input type="checkbox" id="chkSolo"><span>Solo / sin compañía adulta</span>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" id="chkOtrosMenores"><span>Acompañado por otros menores</span>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" id="chkConAdulto"><span>Acompañado por adulto</span>
+        </label>
+        <div class="check-sub" id="subAdulto" style="display:none;">
+          <div class="field-grid col-2">
+            <div class="field">
+              <label>Nombre del adulto</label>
+              <input type="text" id="nombreAdulto" placeholder="Nombre y apellido">
+            </div>
+            <div class="field">
+              <label>DNI del adulto</label>
+              <input type="text" id="dniAdulto" placeholder="Nro. de documento">
+            </div>
+          </div>
+        </div>
+        <label class="check-item">
+          <input type="checkbox" id="chkRiesgo"><span>Signos de riesgo aparente (frío, hambre, lesiones, suciedad, exposición a sustancias, u otro)</span>
+        </label>
+        <div class="check-sub" id="subRiesgo" style="display:none;">
+          <div class="field">
+            <label>Descripción del riesgo observado</label>
+            <textarea id="descRiesgo" placeholder="Describir brevemente los signos observados..." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:4mm;">
+      <label>Descripción física básica (sin fotografía de cara)</label>
+      <input type="text" id="descFisica" placeholder="Altura aprox., ropa, contextura — solo para identificación en campo">
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: SITUACIÓN OBSERVADA -->
+  <div class="section">
+    <div class="section-title">3. Situación Detectada</div>
+    <div class="check-group">
+      <label class="check-item"><input type="checkbox" id="sit1"><span>Deambulación nocturna sin compañía adulta</span></label>
+      <label class="check-item"><input type="checkbox" id="sit2"><span>Mendicidad o venta ambulante</span></label>
+      <label class="check-item"><input type="checkbox" id="sit3"><span>Dormir o permanecer en espacio público</span></label>
+      <label class="check-item"><input type="checkbox" id="sit4"><span>Exposición a riesgo inminente (tráfico, frío extremo, violencia, sustancias psicoactivas, etc.)</span></label>
+      <label class="check-item"><input type="checkbox" id="sit5"><span>Otra situación:</span></label>
+    </div>
+    <div class="field" style="margin-top:3mm;">
+      <label>Especificar (si marcó "Otra situación" u observaciones adicionales)</label>
+      <input type="text" id="otraSit" placeholder="Descripción de la situación...">
+    </div>
+  </div>
+
+</div><!-- fin página 1 -->
+
+<!-- ═══════════════════════════════════ PÁGINA 2 ═══════════════════════════════════ -->
+<div class="acta" id="pag2">
+
+  <!-- ENCABEZADO MINI CONTINUACIÓN -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5mm;padding-bottom:3mm;border-bottom:2px solid var(--divider);">
+    <span style="font-family:'Merriweather',serif;font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">Acta de Intervención – Protección de Menores</span>
+    <span style="font-size:12px;color:var(--text-muted);">Acta N°: <strong id="nroActaRepeat">___</strong> · Hoja 2/3</span>
+  </div>
+
+  <!-- SECCIÓN 4: ACCIONES REALIZADAS -->
+  <div class="section">
+    <div class="section-title">4. Acciones Realizadas por el Inspector</div>
+
+    <!-- 4.1 Diálogo -->
+    <div style="margin-bottom:4mm;">
+      <label class="check-item" style="margin-bottom:3mm;">
+        <input type="checkbox" id="acc1"><span style="font-weight:700;">Acercamiento y diálogo inicial con el menor</span>
+      </label>
+      <div class="check-sub">
+        <p style="font-size:12.5px;font-style:italic;color:var(--text-muted);margin-bottom:2mm;">Frase sugerida: <em>"Hola, ¿estás bien? ¿Dónde vivís? ¿Estás con alguien?"</em></p>
+        <div class="field">
+          <label>Respuesta / actitud del menor</label>
+          <textarea id="respuestaMenor" placeholder="Describir la respuesta o actitud observada..." rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4.2 Comunicaciones -->
+    <div style="margin-bottom:4mm;">
+      <label class="check-item" style="margin-bottom:3mm;">
+        <input type="checkbox" id="acc2"><span style="font-weight:700;">Comunicaciones realizadas</span>
+      </label>
+      <div class="check-sub">
+        <div class="field-grid col-1" style="gap:3mm;">
+
+          <div style="border:1px solid var(--border-light);border-radius:3px;padding:6px 10px;">
+            <label class="check-item" style="margin-bottom:2mm;">
+              <input type="checkbox" id="llamo102"><span style="font-weight:600;">Línea 102 – Niñez Provincial</span>
+            </label>
+            <div class="field-grid col-2">
+              <div class="field-inline"><label>Hora de llamada:</label><input type="time" id="hora102"></div>
+              <div class="field"><label>Respuesta / Nro. de caso</label><input type="text" id="resp102" placeholder="Respuesta obtenida"></div>
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--border-light);border-radius:3px;padding:6px 10px;">
+            <label class="check-item" style="margin-bottom:2mm;">
+              <input type="checkbox" id="llamoNinez"><span style="font-weight:600;">Área de Niñez y Adolescencia Municipal</span>
+            </label>
+            <div class="field-grid col-2">
+              <div class="field-inline"><label>Hora:</label><input type="time" id="horaNinez"></div>
+              <div class="field"><label>Responsable contactado</label><input type="text" id="respNinez" placeholder="Nombre del responsable"></div>
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--border-light);border-radius:3px;padding:6px 10px;">
+            <label class="check-item" style="margin-bottom:2mm;">
+              <input type="checkbox" id="llamoComisaria"><span style="font-weight:600;">Comisaría / Policía Provincial</span>
+            </label>
+            <div class="field-grid col-2">
+              <div class="field-inline"><label>Hora:</label><input type="time" id="horaComisaria"></div>
+              <div class="field"><label>N° móvil / unidad policial</label><input type="text" id="respComisaria" placeholder="N° de móvil o patrullero"></div>
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--border-light);border-radius:3px;padding:6px 10px;">
+            <label class="check-item" style="margin-bottom:2mm;">
+              <input type="checkbox" id="llamoCEO"><span style="font-weight:600;">Centro Estratégico de Operaciones (CEO) – Ojos en Alerta</span>
+            </label>
+            <div class="field-grid col-2">
+              <div class="field-inline"><label>Hora:</label><input type="time" id="horaCEO"></div>
+              <div class="field"><label>Operador / observación</label><input type="text" id="respCEO" placeholder="Nombre del operador o novedad"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 4.3 Traslado -->
+    <div style="margin-bottom:4mm;">
+      <label class="check-item" style="margin-bottom:3mm;">
+        <input type="checkbox" id="acc3"><span style="font-weight:700;">Acción sobre el menor</span>
+      </label>
+      <div class="check-sub">
+        <div class="check-group">
+          <label class="check-item"><input type="radio" name="accion" value="espera"><span>Espera en el lugar hasta llegada de asistente social / policía</span></label>
+          <label class="check-item"><input type="radio" name="accion" value="traslado"><span>Traslado a sede / comisaría / hogar temporal</span></label>
+          <label class="check-item"><input type="radio" name="accion" value="entrega"><span>Entrega a familiar presente en el lugar</span></label>
+          <label class="check-item"><input type="radio" name="accion" value="senego"><span>El menor se negó a acompañar (se deja constancia)</span></label>
+        </div>
+        <div class="field" style="margin-top:3mm;">
+          <label>Detalle / razón de la acción</label>
+          <input type="text" id="detalleAccion" placeholder="Describir la razón o circunstancias...">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5: DERIVACIÓN -->
+  <div class="section">
+    <div class="section-title">5. Derivación y Transferencia de Responsabilidad</div>
+    <div class="field-grid col-2">
+      <div class="field">
+        <label>Derivado a (institución / responsable)</label>
+        <input type="text" id="derivadoA" placeholder="Nombre de la institución o persona">
+      </div>
+      <div class="field">
+        <label>Hora de derivación</label>
+        <input type="time" id="horaDerivacion">
+      </div>
+    </div>
+    <div class="field-grid col-2" style="margin-top:4mm;">
+      <div class="field">
+        <label>Nombre del receptor responsable</label>
+        <input type="text" id="receptor" placeholder="Nombre y apellido">
+      </div>
+      <div class="field">
+        <label>Cargo / institución del receptor</label>
+        <input type="text" id="cargoReceptor" placeholder="Cargo e institución">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 6: OBSERVACIONES -->
+  <div class="section">
+    <div class="section-title">6. Observaciones</div>
+    <div class="field">
+      <label>Observaciones generales (resistencia, invocación de interés superior, contexto especial, novedades)</label>
+      <textarea id="observaciones" rows="4" placeholder="Registrar aquí cualquier circunstancia relevante no contemplada en los campos anteriores..."></textarea>
+    </div>
+  </div>
+
+</div><!-- fin página 2 -->
+
+<!-- ═══════════════════════════════════ PÁGINA 3 ═══════════════════════════════════ -->
+<div class="acta" id="pag3">
+
+  <!-- ENCABEZADO MINI -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5mm;padding-bottom:3mm;border-bottom:2px solid var(--divider);">
+    <span style="font-family:'Merriweather',serif;font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">Acta de Intervención – Protección de Menores</span>
+    <span style="font-size:12px;color:var(--text-muted);">Acta N°: <strong id="nroActaRepeat2">___</strong> · Hoja 3/3</span>
+  </div>
+
+  <!-- FIRMAS -->
+  <div class="section">
+    <div class="section-title">7. Firmas y Conformidad</div>
+    <div class="signature-grid">
+      <div class="signature-box">
+        <div class="sig-label">Agente interviniente</div>
+        <div class="sig-line"></div>
+        <input type="text" id="firmaAgente" placeholder="Nombre y apellido">
+        <div class="sig-sublabel" style="margin-top:3px;">Legajo: <input type="text" id="firmaLegajo" placeholder="N° legajo" style="width:90px;"></div>
+      </div>
+      <div class="signature-box">
+        <div class="sig-label">Receptor / Institución derivada</div>
+        <div class="sig-line"></div>
+        <input type="text" id="firmaReceptor" placeholder="Nombre y apellido">
+        <div class="sig-sublabel" style="margin-top:3px;">Cargo / DNI: <input type="text" id="firmaReceptorCargo" placeholder="Cargo y DNI" style="width:130px;"></div>
+      </div>
+      <div class="signature-box">
+        <div class="sig-label">Testigo (si hubiera)</div>
+        <div class="sig-line"></div>
+        <input type="text" id="firmaTestigo" placeholder="Nombre y apellido">
+        <div class="sig-sublabel" style="margin-top:3px;">DNI: <input type="text" id="firmaTestigoDni" placeholder="N° documento" style="width:110px;"></div>
+      </div>
+      <div class="signature-box">
+        <div class="sig-label">Supervisor / Jefe de turno</div>
+        <div class="sig-line"></div>
+        <input type="text" id="firmaSupervisor" placeholder="Nombre y apellido">
+        <div class="sig-sublabel" style="margin-top:3px;">Legajo: <input type="text" id="firmaSupLegajo" placeholder="N° legajo" style="width:90px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider-strong">
+
+  <!-- NOTA LEGAL -->
+  <div class="note-box">
+    <h4>⚖️ Nota obligatoria para el legajo</h4>
+    <ul>
+      <li>Toda intervención se realiza en estricto cumplimiento del <strong>interés superior del niño</strong> (Ley 26.061, Art. 3°).</li>
+      <li>No se realizan identificaciones públicas ni difusión de imágenes o datos personales. <strong>Confidencialidad absoluta</strong>, salvo oficio judicial.</li>
+      <li>La Municipalidad de Reconquista no asume responsabilidad por decisiones posteriores del Área de Niñez Municipal o del Poder Judicial.</li>
+      <li>El original de esta acta se archiva en el legajo de la Agencia Gubernamental de Control. Copia al área receptora.</li>
+    </ul>
+  </div>
+
+  <hr class="divider-strong">
+
+  <!-- INSTRUCCIONES DE USO -->
+  <div class="instrucciones-box">
+    <h2>📌 Protocolo de Actuación para Inspectores</h2>
+    <div class="instruccion-item">
+      <div class="instruccion-num">1</div>
+      <div class="instruccion-text"><strong>Nunca forzar ni retener físicamente</strong> al menor, salvo riesgo inminente para su vida o integridad (tráfico, frío extremo, violencia).</div>
+    </div>
+    <div class="instruccion-item">
+      <div class="instruccion-num">2</div>
+      <div class="instruccion-text"><strong>No interrogar</strong> como si fuera procedimiento policial. Preguntar con calma, sin asustar ni intimidar. Usar lenguaje claro y cercano.</div>
+    </div>
+    <div class="instruccion-item">
+      <div class="instruccion-num">3</div>
+      <div class="instruccion-text"><strong>Registrar sin fotografía de cara.</strong> Solo se puede registrar el entorno para ubicación. Proteger la identidad visual del menor.</div>
+    </div>
+    <div class="instruccion-item">
+      <div class="instruccion-num">4</div>
+      <div class="instruccion-text"><strong>Llamar siempre a la Línea 102 o al Área de Niñez Municipal</strong> como primer paso ante cualquier situación de vulnerabilidad confirmada.</div>
+    </div>
+    <div class="instruccion-item">
+      <div class="instruccion-num">5</div>
+      <div class="instruccion-text">Si <strong>no hay respuesta rápida</strong> del área de niñez, derivar a la comisaría más cercana. Siempre con esta acta completada.</div>
+    </div>
+    <div class="instruccion-item">
+      <div class="instruccion-num">6</div>
+      <div class="instruccion-text"><strong>Cerrar el acta</strong> con hora de derivación y nombre legible del receptor. El acta incompleta no tiene validez administrativa.</div>
+    </div>
+    <div class="instruccion-item">
+      <div class="instruccion-num">7</div>
+      <div class="instruccion-text"><strong>Entregar copia firmada</strong> al área receptora. El original va al legajo de la AGC. Informar al CEO el cierre de la intervención.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:6mm;border-top:2px solid var(--border-light);padding-top:5mm;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="https://res.cloudinary.com/dthg9wo6r/image/upload/v1763866260/logoagc_jkb5my.jpg" alt="AGC" style="height:42px;object-fit:contain;" onerror="this.style.display='none'">
+      <div>
+        <div style="font-family:'Merriweather',serif;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.8px;">Agencia Gubernamental de Control</div>
+        <div style="font-size:11px;color:var(--text-muted);">Secretaría de Control Público · Municipalidad de Reconquista · Santa Fe</div>
+      </div>
+    </div>
+    <div style="font-size:11.5px;color:var(--text-muted);text-align:right;line-height:1.8;">
+      <strong style="color:var(--text);">Contactos de emergencia:</strong><br>
+      Área Niñez: <strong style="color:var(--text);">3482-xxxxxx</strong> &nbsp;·&nbsp;
+      Inspección General: <strong style="color:var(--text);">3482-560840</strong> &nbsp;·&nbsp;
+      CEO Ojos en Alerta: <strong style="color:var(--text);">3482-xxxxxxx</strong>
+    </div>
+  </div>
+
+</div><!-- fin página 3 -->
+</div><!-- fin page-wrapper -->
+
+<script>
+// ── TEMA ──
+const toggle = document.getElementById('themeToggle');
+const root = document.documentElement;
+
+// Detectar preferencia del sistema
+if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  root.setAttribute('data-theme', 'dark');
+  toggle.checked = true;
+}
+
+toggle.addEventListener('change', () => {
+  root.setAttribute('data-theme', toggle.checked ? 'dark' : 'light');
+});
+
+// ── SINCRONIZAR N° ACTA EN PÁGINAS 2 y 3 ──
+document.getElementById('nroActa').addEventListener('input', function() {
+  document.getElementById('nroActaRepeat').textContent = this.value || '___';
+  document.getElementById('nroActaRepeat2').textContent = this.value || '___';
+});
+
+// ── MOSTRAR/OCULTAR SUB-SECCIONES ──
+document.getElementById('chkConAdulto').addEventListener('change', function() {
+  document.getElementById('subAdulto').style.display = this.checked ? 'flex' : 'none';
+  document.getElementById('subAdulto').style.flexDirection = 'column';
+});
+
+document.getElementById('chkRiesgo').addEventListener('change', function() {
+  document.getElementById('subRiesgo').style.display = this.checked ? 'block' : 'none';
+});
+
+// ── LIMPIAR FORMULARIO ──
+function limpiarFormulario() {
+  if (!confirm('¿Confirma que desea limpiar todos los campos del acta?')) return;
+  const inputs = document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"], input[type="number"], select, textarea');
+  inputs.forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
+  document.getElementById('subAdulto').style.display = 'none';
+  document.getElementById('subRiesgo').style.display = 'none';
+  document.getElementById('nroActaRepeat').textContent = '___';
+  document.getElementById('nroActaRepeat2').textContent = '___';
+}
+
+// ── IMPRIMIR EN BLANCO ──
+function imprimirEnBlanco() {
+  const inputs = document.querySelectorAll('input[type="text"], input[type="date"], input[type="time"], input[type="number"], select, textarea');
+  const checkboxes = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+  const allWithPlaceholder = document.querySelectorAll('[placeholder]');
+  const dateTimeInputs = document.querySelectorAll('input[type="date"], input[type="time"]');
+  const selects = document.querySelectorAll('select');
+
+  // Guardar valores y placeholders
+  const savedValues = [];
+  inputs.forEach(el => savedValues.push({ el, value: el.value, si: el.selectedIndex }));
+
+  const savedChecks = [];
+  checkboxes.forEach(el => savedChecks.push({ el, checked: el.checked }));
+
+  const savedPlaceholders = [];
+  allWithPlaceholder.forEach(el => {
+    savedPlaceholders.push({ el, ph: el.getAttribute('placeholder') });
+    el.setAttribute('placeholder', '');
+  });
+
+  // Guardar tipos de date/time y convertirlos a text para ocultar el chrome del navegador
+  const savedTypes = [];
+  dateTimeInputs.forEach(el => {
+    savedTypes.push({ el, type: el.type });
+    el.setAttribute('type', 'text');
+    el.value = '';
+  });
+
+  // Guardar texto de la primera opción de cada select y vaciarlo
+  const savedOptionTexts = [];
+  selects.forEach(sel => {
+    if (sel.options.length > 0) {
+      savedOptionTexts.push({ sel, text: sel.options[0].text });
+      sel.options[0].text = '';
+      sel.selectedIndex = 0;
+    }
+  });
+
+  // Guardar visibilidad de sub-secciones y N° acta repetido
+  const subAdultoDisplay = document.getElementById('subAdulto').style.display;
+  const subRiesgoDisplay = document.getElementById('subRiesgo').style.display;
+  const nroRepeat = document.getElementById('nroActaRepeat').textContent;
+  const nroRepeat2 = document.getElementById('nroActaRepeat2').textContent;
+
+  // Vaciar resto de valores
+  inputs.forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else if (el.type !== 'date' && el.type !== 'time') el.value = '';
+  });
+  checkboxes.forEach(el => el.checked = false);
+  document.getElementById('subAdulto').style.display = 'none';
+  document.getElementById('subRiesgo').style.display = 'none';
+  document.getElementById('nroActaRepeat').textContent = '___';
+  document.getElementById('nroActaRepeat2').textContent = '___';
+
+  // Imprimir
+  window.print();
+
+  // Restaurar todo
+  setTimeout(() => {
+    savedValues.forEach(({ el, value, si }) => {
+      if (el.tagName === 'SELECT') el.selectedIndex = si;
+      else el.value = value;
+    });
+    savedChecks.forEach(({ el, checked }) => el.checked = checked);
+    savedPlaceholders.forEach(({ el, ph }) => el.setAttribute('placeholder', ph));
+    savedTypes.forEach(({ el, type }) => el.setAttribute('type', type));
+    savedOptionTexts.forEach(({ sel, text }) => { sel.options[0].text = text; });
+    document.getElementById('subAdulto').style.display = subAdultoDisplay;
+    document.getElementById('subRiesgo').style.display = subRiesgoDisplay;
+    document.getElementById('nroActaRepeat').textContent = nroRepeat;
+    document.getElementById('nroActaRepeat2').textContent = nroRepeat2;
+  }, 500);
+}
+async function exportarPDF() {
+  // Ocultar barra UI temporalmente
+  const uiBar = document.getElementById('uiBar');
+  uiBar.style.display = 'none';
+
+  // Forzar tema claro para PDF
+  const currentTheme = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', 'light');
+
+  const wrapper = document.querySelector('.page-wrapper');
+  const nro = document.getElementById('nroActa').value || 'SN';
+  const fecha = document.getElementById('fecha').value || new Date().toISOString().slice(0,10);
+
+  const opt = {
+    margin: 0,
+    filename: `Acta_Intervencion_${nro}_${fecha}.pdf`,
+    image: { type: 'jpeg', quality: 0.97 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      backgroundColor: '#ffffff'
+    },
+    jsPDF: {
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'], before: '.acta + .acta' }
+  };
+
+  try {
+    await html2pdf().set(opt).from(wrapper).save();
+  } catch(e) {
+    alert('Error al generar el PDF. Por favor use el botón Imprimir como alternativa.');
+    console.error(e);
+  }
+
+  // Restaurar
+  root.setAttribute('data-theme', currentTheme);
+  uiBar.style.display = 'flex';
+}
+</script>
+</body>
+</html>
